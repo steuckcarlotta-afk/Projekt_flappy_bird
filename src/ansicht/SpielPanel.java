@@ -4,6 +4,8 @@ import modell.Vogel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class SpielPanel extends JPanel{
     private Vogel vogel;
@@ -11,10 +13,12 @@ public class SpielPanel extends JPanel{
 
     public SpielPanel(){
         //Größe Fenster
-        setPreferredSize(new Dimension(500, 700));
+        setPreferredSize(new Dimension(500, 700)); // Größe des Spielfelds
         setBackground(Color.CYAN);
+        setFocusable(true); // Aktiviert Tastatureingaben
 
-        vogel = new Vogel(100, 200, 30);
+
+        vogel = new Vogel(100, 200, 30); // Startposition des Vogels
         //alle 16millisek
         timer = new Timer(16, e -> {
 
@@ -25,6 +29,14 @@ public class SpielPanel extends JPanel{
                     vogel.getY() + (int) vogel.getGeschwindigkeitY()
             );
             repaint();
+        });
+        addKeyListener(new KeyAdapter() {  // Tastatursteuerung
+            @Override
+            public void keyPressed(KeyEvent e){
+                if(e.getKeyCode() == KeyEvent.VK_SPACE){  // Vogel springt bei Leertaste
+                    vogel.setGeschwindigkeitY(-8);  // Negative Geschwindigkeit bewegt den Vogel nach oben
+                }
+            }
         });
 
         timer.start();
@@ -42,5 +54,8 @@ public class SpielPanel extends JPanel{
                 vogel.getGroesse(),//breite
                 vogel.getGroesse()//höhe
         );
+        if(vogel.getY()+ vogel.getGroesse() >= getHeight()) { // Prüft, ob der Vogel den Boden berührt
+            vogel.setY(getHeight() - vogel.getGroesse()); // Setzt den Vogel exakt auf den Boden
+            vogel.setGeschwindigkeitY(0); // Stoppt die Fallbewegung
     }
 }
