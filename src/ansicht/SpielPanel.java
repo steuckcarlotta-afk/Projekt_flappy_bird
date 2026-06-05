@@ -74,7 +74,7 @@ public class SpielPanel extends JPanel {
         g.setColor(Color.GREEN);
         }
         g.fillRect(
-//obere säule
+//obere säule(Rechteck)
                 saeule.getX(),
 
                 0,
