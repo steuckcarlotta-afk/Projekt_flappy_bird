@@ -32,6 +32,29 @@ public class SpielPanel extends JPanel {
                     vogel.getY() + (int) vogel.getGeschwindigkeitY()
             );
             saeule.setX(saeule.getX()-3);
+            Rectangle vogelRechteck = new Rectangle(
+                    vogel.getX(),
+                    vogel.getY(),
+                    vogel.getGroesse(),
+                    vogel.getGroesse()
+            );
+            Rectangle obereSaeule = new Rectangle(   // erstellt ein Rechteck für die obere Säule
+                    saeule.getX(),
+                    0, // die obere Säule beginnt ganz oben im Fenster
+            saeule.getBreite(),
+            saeule.getLueckeY()
+            );
+            Rectangle unteresauele = new Rectangle(
+                    saeule.getX(),
+                    saeule.getLueckeY() + saeule.getLueckeHoehe(),
+                    saeule.getBreite(),
+                    getHeight() - (saeule.getLueckeHoehe()+ saeule.getLueckeHoehe())
+            );
+            if (vogelRechteck.intersects(obereSaeule) // prüfen ob sich der Vogel mit der oberen oder unteren Säule überschneidet
+            || vogelRechteck.intersects(unteresauele)){
+                timer.stop();
+                JOptionPane.showMessageDialog(null,"Game Over!");
+            }
             repaint();
 
             //wenn säule ausm bild verschwindet soll sie wieder kommen
