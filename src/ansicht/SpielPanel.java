@@ -26,11 +26,13 @@ public class SpielPanel extends JPanel {
         timer = new Timer(16, e -> {
 
             vogel.setGeschwindigkeitY(
-                    vogel.getGeschwindigkeitY() + 0.5 //gravität wird hergestellt
+                    vogel.getGeschwindigkeitY() + 0.5 //gravität wird hergestellt(geschwindigkeit nach unten wird immer größer)
             );
+            //Vogel bewegen
             vogel.setY(
                     vogel.getY() + (int) vogel.getGeschwindigkeitY()
             );
+            //säule bewegen, pro klick bewegt er sich nach links
             saeule.setX(saeule.getX()-3);
             Rectangle vogelRechteck = new Rectangle(
                     vogel.getX(),
@@ -83,7 +85,7 @@ public class SpielPanel extends JPanel {
     @Override
 
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+        super.paintComponent(g);//damit keine alten bilder stehen bleiben
         g.setColor(Color.YELLOW);
         g.fillOval(
                 vogel.getX(),
@@ -94,8 +96,9 @@ public class SpielPanel extends JPanel {
         if (vogel.getY() + vogel.getGroesse() >= getHeight()) { // Prüft, ob der Vogel den Boden berührt
             vogel.setY(getHeight() - vogel.getGroesse()); // Setzt den Vogel exakt auf den Boden
             vogel.setGeschwindigkeitY(0); // Stoppt die Fallbewegung
-        g.setColor(Color.GREEN);
         }
+
+        g.setColor(Color.GREEN);
         g.fillRect(
 //obere säule(Rechteck)
                 saeule.getX(),
