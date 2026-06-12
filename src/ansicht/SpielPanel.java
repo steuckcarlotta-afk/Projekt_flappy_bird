@@ -12,6 +12,8 @@ public class SpielPanel extends JPanel {
     private Vogel vogel;
     private Timer timer;
     private Saeule saeule;
+    private int punkte = 0;
+    private boolean punktGegeben = false;
 
     public SpielPanel() {
         //Größe Fenster
@@ -34,6 +36,10 @@ public class SpielPanel extends JPanel {
             );
             //säule bewegen, pro klick bewegt er sich nach links
             saeule.setX(saeule.getX()-3);
+            if (saeule.getX()+ saeule.getBreite()< vogel.getX() && !punktGegeben){
+                punkte ++;
+                punktGegeben = true;
+            }
             Rectangle vogelRechteck = new Rectangle(
                     vogel.getX(),
                     vogel.getY(),
@@ -50,7 +56,7 @@ public class SpielPanel extends JPanel {
                     saeule.getX(),
                     saeule.getLueckeY() + saeule.getLueckeHoehe(),
                     saeule.getBreite(),
-                    getHeight() - (saeule.getLueckeHoehe()+ saeule.getLueckeHoehe())
+                    getHeight() - (saeule.getLueckeY()+ saeule.getLueckeHoehe())
             );
             if (vogelRechteck.intersects(obereSaeule) // prüfen ob sich der Vogel mit der oberen oder unteren Säule überschneidet
             || vogelRechteck.intersects(unteresauele)){
@@ -63,6 +69,7 @@ public class SpielPanel extends JPanel {
             if (saeule.getX() + saeule.getBreite() < 0) {
 
                 saeule.setX(getWidth());
+                punktGegeben = false;
 
             }
         });
@@ -124,6 +131,11 @@ public class SpielPanel extends JPanel {
                 getHeight()
 
         );
+        g.setColor(Color.BLACK);
+        g.setFont(new Font ("Arial", Font.BOLD, 30));
+        g.drawString("Punkte:" + punkte, 20, 40);
     }
+
+
 
 }
