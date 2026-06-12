@@ -7,6 +7,7 @@ public class Saeule {
         private int lueckeY;
         private int lueckeHoehe;
         private int gschwindigkeit=3;
+        private boolean punktGegeben=false;
 
         //geschwindigkeit nicht in konstruktor, weil konstruktur nur einmal ausgeführt wird
         public Saeule(int x, int breite, int lueckeY, int lueckeHoehe) {
@@ -41,5 +42,12 @@ public class Saeule {
             this.x=x;
             }
 
+        public boolean isPunktGegeben() {
+        return punktGegeben;
+        }
+
+        public void setPunktGegeben(boolean punktGegeben) {
+        this.punktGegeben = punktGegeben;
+    }
 }
 
