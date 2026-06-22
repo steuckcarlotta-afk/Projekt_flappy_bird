@@ -15,6 +15,9 @@ public class SpielPanel extends JPanel {
     private Image vogelBild;
     private Timer timer;
     private ArrayList<Saeule> saeulen;
+    private Image saeuleUnten;
+    private Image saeuleOben;
+
     private int punkte = 0;
     private Image hintergrundBild;
     private SpielModell spielModell;
@@ -26,8 +29,10 @@ public class SpielPanel extends JPanel {
         setFocusable(true); // Aktiviert Tastatureingaben
 
         //konstruktoren
+        saeuleOben= new ImageIcon("src/Bilder/saeuleOben.png").getImage();
+        saeuleUnten= new ImageIcon("src/Bilder/saeuleUnten.png").getImage();
         hintergrundBild = new ImageIcon("src/Bilder/hintergrund.png").getImage();
-        vogelBild = new ImageIcon("src/Bilder/vogel.gif").getImage();
+        vogelBild = new ImageIcon("src/Bilder/vogel.png").getImage();
         vogel = new Vogel(100, 200, 100); //startposition vogel
         spielModell = new SpielModell();
 
@@ -140,42 +145,27 @@ public class SpielPanel extends JPanel {
         );
 
         for (Saeule saeule : saeulen) {
-            // Pinke Säulen zeichnen
-            g.setColor(new Color(255, 105, 180));
+                // Obere Säule – Bild wird von oben nach unten gestreckt bis zur Lücke
+                g.drawImage(
+                        saeuleOben,
+                        saeule.getX(),                  // x
+                        0,                              // y (beginnt ganz oben)
+                        saeule.getBreite(),             // breite
+                        saeule.getLueckeY(),            // höhe (bis zur Lücke)
+                        this
+                );
 
-            // obere Säule
-            g.fillRect(
-                    saeule.getX(),
-                    0,
-                    saeule.getBreite(),
-                    saeule.getLueckeY()
-            );
-
-            // untere Säule
-            g.fillRect(
-                    saeule.getX(),
-                    saeule.getLueckeY() + saeule.getLueckeHoehe(),
-                    saeule.getBreite(),
-                    getHeight() - (saeule.getLueckeY() + saeule.getLueckeHoehe())
-            );
-
-            // Dunkler Rand
-            g.setColor(new Color(150, 20, 90));
-
-            g.drawRect(
-                    saeule.getX(),
-                    0,
-                    saeule.getBreite(),
-                    saeule.getLueckeY()
-            );
-
-            g.drawRect(
-                    saeule.getX(),
-                    saeule.getLueckeY() + saeule.getLueckeHoehe(),
-                    saeule.getBreite(),
-                    getHeight() - (saeule.getLueckeY() + saeule.getLueckeHoehe())
-            );
-        }
+                // Untere Säule – beginnt nach der Lücke, geht bis zum Boden
+                int untereY = saeule.getLueckeY() + saeule.getLueckeHoehe();
+                g.drawImage(
+                        saeuleUnten,
+                        saeule.getX(),                  // x
+                        untereY,                        // y (nach der Lücke)
+                        saeule.getBreite(),             // breite
+                        getHeight() - untereY,          // höhe (bis zum Boden)
+                        this
+                );
+            }
 
         g.drawImage(
                 vogelBild,
