@@ -17,6 +17,7 @@ public class SpielPanel extends JPanel {
     private ArrayList<Saeule> saeulen;
     private Image saeuleUnten;
     private Image saeuleOben;
+    private boolean spielGestartet = false;
 
     private int punkte = 0;
     private Image hintergrundBild;
@@ -43,6 +44,11 @@ public class SpielPanel extends JPanel {
 
         //alle 16millisek
         timer = new Timer(16, e -> {
+            if (!spielGestartet) {
+                repaint();
+                return;
+            }
+
             if (spielModell.isGameOver()){
                 repaint();
                 return;
@@ -119,7 +125,9 @@ public class SpielPanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (spielModell.isGameOver()) {
+                    if (!spielGestartet) {
+                        spielGestartet = true;
+                    } else if (spielModell.isGameOver()) {
                         neustarten();
                     } else {
                         vogel.setGeschwindigkeitY(-8);  // Negative Geschwindigkeit bewegt den Vogel nach oben
@@ -144,28 +152,58 @@ public class SpielPanel extends JPanel {
                 this
         );
 
-        for (Saeule saeule : saeulen) {
-                // Obere Säule – Bild wird von oben nach unten gestreckt bis zur Lücke
-                g.drawImage(
-                        saeuleOben,
-                        saeule.getX(),                  // x
-                        0,                              // y (beginnt ganz oben)
-                        saeule.getBreite(),             // breite
-                        saeule.getLueckeY(),            // höhe (bis zur Lücke)
-                        this
-                );
+        if (!spielGestartet) {
+            g.drawImage(
+                    vogelBild,
+                    340,
+                    120,
+                    120,
+                    120,
+                    this
+            );
 
-                // Untere Säule – beginnt nach der Lücke, geht bis zum Boden
-                int untereY = saeule.getLueckeY() + saeule.getLueckeHoehe();
-                g.drawImage(
-                        saeuleUnten,
-                        saeule.getX(),                  // x
-                        untereY,                        // y (nach der Lücke)
-                        saeule.getBreite(),             // breite
-                        getHeight() - untereY,          // höhe (bis zum Boden)
-                        this
-                );
-            }
+            g.setFont(new Font("Arial", Font.BOLD, 45));
+            g.setColor(new Color(255, 120, 170));
+            g.drawString("FLAPPY BIRD", 80, 230);
+
+            g.setColor(new Color(255, 230, 240));
+            g.fillRoundRect(150, 400, 200, 70, 20, 20);
+
+            g.setColor(new Color(120, 90, 120));
+            g.drawRoundRect(150, 400, 200, 70, 20, 20);
+
+            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.setColor(Color.BLACK);
+            g.drawString("START", 195, 445);
+
+            g.setFont(new Font("Arial", Font.BOLD, 18));
+            g.drawString("Leertaste zum Starten", 145, 510);
+
+            return;
+        }
+
+        for (Saeule saeule : saeulen) {
+            // Obere Säule – Bild wird von oben nach unten gestreckt bis zur Lücke
+            g.drawImage(
+                    saeuleOben,
+                    saeule.getX(),                  // x
+                    0,                              // y (beginnt ganz oben)
+                    saeule.getBreite(),             // breite
+                    saeule.getLueckeY(),            // höhe (bis zur Lücke)
+                    this
+            );
+
+            // Untere Säule – beginnt nach der Lücke, geht bis zum Boden
+            int untereY = saeule.getLueckeY() + saeule.getLueckeHoehe();
+            g.drawImage(
+                    saeuleUnten,
+                    saeule.getX(),                  // x
+                    untereY,                        // y (nach der Lücke)
+                    saeule.getBreite(),             // breite
+                    getHeight() - untereY,          // höhe (bis zum Boden)
+                    this
+            );
+        }
 
         g.drawImage(
                 vogelBild,
@@ -214,16 +252,16 @@ public class SpielPanel extends JPanel {
             g.drawString("Leertaste zum Neustart", 110, 420);
         }
     }
-        private void neustarten() {
-            vogel = new Vogel(100, 200, 100);
+    private void neustarten() {
+        vogel = new Vogel(100, 200, 100);
 
-            saeulen.clear();
+        saeulen.clear();
 
-            saeulen.add(new Saeule(350, 80, 250, 180));
-            saeulen.add(new Saeule(650, 80, 200, 180));
-            saeulen.add(new Saeule(950, 80, 300, 180));
+        saeulen.add(new Saeule(350, 80, 250, 180));
+        saeulen.add(new Saeule(650, 80, 200, 180));
+        saeulen.add(new Saeule(950, 80, 300, 180));
 
-            spielModell.setPunkte(0);
-            spielModell.setGameOver(false);
-        }
+        spielModell.setPunkte(0);
+        spielModell.setGameOver(false);
     }
+}
