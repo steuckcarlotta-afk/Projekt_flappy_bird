@@ -1,6 +1,7 @@
 package ansicht;
 
 import modell.Saeule;
+import modell.SpielModell;
 import modell.Vogel;
 
 import javax.swing.*;
@@ -16,6 +17,8 @@ public class SpielPanel extends JPanel {
     private ArrayList<Saeule> saeulen;
     private int punkte = 0;
     private Image hintergrundBild;
+    private SpielModell spielModell;
+
 
     public SpielPanel() {
         //Größe Fenster
@@ -26,6 +29,7 @@ public class SpielPanel extends JPanel {
         hintergrundBild = new ImageIcon("src/Bilder/hintergrund.png").getImage();
         vogelBild = new ImageIcon("src/Bilder/vogel.gif").getImage();
         vogel = new Vogel(100, 200, 100); //startposition vogel
+        spielModell = new SpielModell();
 
         saeulen = new ArrayList<>(); //arraylist, für mehrere säulen
         saeulen.add(new Saeule(350, 80, 250, 180));
@@ -34,6 +38,10 @@ public class SpielPanel extends JPanel {
 
         //alle 16millisek
         timer = new Timer(16, e -> {
+            if (spielModell.isGameOver()){
+                repaint();
+                return;
+            }
 
             vogel.setGeschwindigkeitY(
                     vogel.getGeschwindigkeitY() + 0.5 //gravität wird hergestellt(geschwindigkeit nach unten wird immer größer)
@@ -62,7 +70,9 @@ public class SpielPanel extends JPanel {
                 saeule.setX(saeule.getX() - 3);
 
                 if (saeule.getX() + saeule.getBreite() < vogel.getX() && !saeule.isPunktGegeben()) {
-                    punkte++;
+                    spielModell.setPunkte(
+                            spielModell.getPunkte()+1
+                    );
                     saeule.setPunktGegeben(true);
                 }
 
@@ -82,8 +92,12 @@ public class SpielPanel extends JPanel {
 
                 if (vogelRechteck.intersects(obereSaeule)
                         || vogelRechteck.intersects(untereSaeule)) {
-                    timer.stop();
-                    JOptionPane.showMessageDialog(null, "Game Over!");
+                    if (spielModell.getPunkte() > spielModell.getHighscore()) {
+                        spielModell.setHighscore(
+                                spielModell.getPunkte()
+                        );
+                    }
+                    spielModell.setGameOver(true);
                 }
 
                 //wenn säule ausm bild verschwindet soll sie wieder kommen
@@ -99,8 +113,12 @@ public class SpielPanel extends JPanel {
         addKeyListener(new KeyAdapter() {  // Tastatursteuerung
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {  // Vogel springt bei Leertaste
-                    vogel.setGeschwindigkeitY(-8);  // Negative Geschwindigkeit bewegt den Vogel nach oben
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    if (spielModell.isGameOver()) {
+                        neustarten();
+                    } else {
+                        vogel.setGeschwindigkeitY(-8);  // Negative Geschwindigkeit bewegt den Vogel nach oben
+                    }
                 }
             }
         });
@@ -168,8 +186,54 @@ public class SpielPanel extends JPanel {
                 this
         );
 
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("Punkte:" + punkte, 20, 40);
+        g.setFont(new Font("Arial", Font.BOLD, 50));
+
+        g.setColor(new Color(255, 230, 240));
+
+        String punkteText = String.valueOf(spielModell.getPunkte());
+
+        g.drawString(
+                punkteText,
+                getWidth() / 2 - 15,
+                60
+        );
+        if (spielModell.isGameOver()) {
+
+            // Hintergrund
+            g.setColor(new Color(245, 220, 230));
+            g.fillRoundRect(80, 180, 340, 260, 15, 15);
+
+            // Rahmen
+            g.setColor(new Color(120, 90, 120));
+            g.drawRoundRect(80, 180, 340, 260, 15, 15);
+
+            g.setFont(new Font("Arial", Font.BOLD, 38));
+            g.setColor(new Color(255, 120, 170));
+            g.drawString("GAME OVER", 120, 240);
+
+            g.setFont(new Font("Arial", Font.BOLD, 24));
+            g.setColor(Color.BLACK);
+            g.drawString("Score", 140, 310);
+            g.drawString(String.valueOf(spielModell.getPunkte()), 290, 310);
+
+            // Highscore
+            g.drawString("Highscore", 110, 360);
+            g.drawString(String.valueOf(spielModell.getHighscore()), 290, 360);
+
+            g.setFont(new Font("Arial", Font.BOLD, 18));
+            g.drawString("Leertaste zum Neustart", 110, 420);
+        }
     }
-}
+        private void neustarten() {
+            vogel = new Vogel(100, 200, 100);
+
+            saeulen.clear();
+
+            saeulen.add(new Saeule(350, 80, 250, 180));
+            saeulen.add(new Saeule(650, 80, 200, 180));
+            saeulen.add(new Saeule(950, 80, 300, 180));
+
+            spielModell.setPunkte(0);
+            spielModell.setGameOver(false);
+        }
+    }
