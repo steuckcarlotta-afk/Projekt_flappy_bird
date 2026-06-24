@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SpielPanel extends JPanel {
     private Vogel vogel;
@@ -22,6 +23,7 @@ public class SpielPanel extends JPanel {
     private int punkte = 0;
     private Image hintergrundBild;
     private SpielModell spielModell;
+    private Random random = new Random();
 
 
     public SpielPanel() {
@@ -65,7 +67,12 @@ public class SpielPanel extends JPanel {
 
             if (vogel.getY() + vogel.getGroesse() >= getHeight()) { // Prüft, ob der Vogel den Boden berührt
                 vogel.setY(getHeight() - vogel.getGroesse()); // Setzt den Vogel exakt auf den Boden
-                vogel.setGeschwindigkeitY(0); // Stoppt die Fallbewegung
+               if(spielModell.getPunkte()> spielModell.getHighscore()){
+                   spielModell.setHighscore(
+                           spielModell.getPunkte()
+                   );
+               }
+               spielModell.setGameOver(true);
             }
 
             Rectangle vogelRechteck = new Rectangle(
@@ -114,6 +121,7 @@ public class SpielPanel extends JPanel {
                 //wenn säule ausm bild verschwindet soll sie wieder kommen
                 if (saeule.getX() + saeule.getBreite() < 0) {
                     saeule.setX(getWidth() + 600);
+                    saeule.setLueckeY(random.nextInt(250)+100);
                     saeule.setPunktGegeben(false);
                 }
             }

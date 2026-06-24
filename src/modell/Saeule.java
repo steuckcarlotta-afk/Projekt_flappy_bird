@@ -49,5 +49,9 @@ public class Saeule {
         public void setPunktGegeben(boolean punktGegeben) {
         this.punktGegeben = punktGegeben;
     }
+
+    public void setLueckeY(int lueckeY) {
+        this.lueckeY = lueckeY;
+    }
 }
 
