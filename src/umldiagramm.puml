@@ -1,0 +1,106 @@
+@startuml
+skinparam classAttributeIconSize 0
+title Flappy Bird UML-Klassendiagramm
+
+class Main {
+  +main(args: String[]): void
+}
+
+package ansicht {
+  class SpielFenster {
+    +SpielFenster()
+  }
+
+  class SpielPanel {
+    -vogel: Vogel
+    -vogelBild: Image
+    -timer: Timer
+    -saeulen: ArrayList<Saeule>
+    -saeuleUnten: Image
+    -saeuleOben: Image
+    -spielGestartet: boolean
+    -punkte: int
+    -hintergrundBild: Image
+    -spielModell: SpielModell
+
+    +SpielPanel()
+    #paintComponent(g: Graphics): void
+    -neustarten(): void
+  }
+}
+
+package modell {
+  class Vogel {
+    -x: int
+    -y: int
+    -groesse: int
+    -geschwindigkeitY: double
+
+    +Vogel(x: int, y: int, groesse: int)
+    +getX(): int
+    +getY(): int
+    +getGroesse(): int
+    +getGeschwindigkeitY(): double
+    +setGeschwindigkeitY(geschwindigkeit: double): void
+    +setY(y: int): void
+  }
+
+  class Saeule {
+    -x: int
+    -breite: int
+    -lueckeY: int
+    -lueckeHoehe: int
+    -gschwindigkeit: int
+    -punktGegeben: boolean
+
+    +Saeule(x: int, breite: int, lueckeY: int, lueckeHoehe: int)
+    +getX(): int
+    +getBreite(): int
+    +getLueckeY(): int
+    +getLueckeHoehe(): int
+    +getGschwindigkeit(): int
+    +setX(x: int): void
+    +isPunktGegeben(): boolean
+    +setPunktGegeben(punktGegeben: boolean): void
+  }
+
+  class SpielModell {
+    -punkte: int
+    -highscore: int
+    -gameOver: boolean
+
+    +getPunkte(): int
+    +setPunkte(punkte: int): void
+    +getHighscore(): int
+    +setHighscore(highscore: int): void
+    +isGameOver(): boolean
+    +setGameOver(gameOver: boolean): void
+  }
+}
+
+package speicherung {
+  class HighscoreSpeicherung {
+    -highscore: int
+
+    +laden(): int
+    +speichern(highscore: int): void
+  }
+}
+
+package steuerung {
+  class SpielSteuerung
+}
+
+Main --> SpielFenster : erstellt
+SpielFenster --|> JFrame
+SpielPanel --|> JPanel
+
+SpielFenster *-- SpielPanel : enthält
+SpielPanel *-- Vogel : besitzt
+SpielPanel *-- SpielModell : besitzt
+SpielPanel o-- "mehrere" Saeule : saeulen
+SpielPanel --> Timer : benutzt
+SpielPanel --> Image : benutzt
+SpielPanel --> KeyAdapter : benutzt
+
+@enduml

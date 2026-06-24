@@ -41,6 +41,8 @@ public class Saeule {
         public void setX(int x){
             this.x=x;
             }
+    //neu, wenn pool eine säule recycelt und lückenhöhe setzt
+        public void setLueckeY(int lueckeY) { this.lueckeY = lueckeY; }
 
         public boolean isPunktGegeben() {
         return punktGegeben;
