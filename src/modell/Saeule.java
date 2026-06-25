@@ -52,8 +52,6 @@ public class Saeule {
         this.punktGegeben = punktGegeben;
     }
 
-    public void setLueckeY(int lueckeY) {
-        this.lueckeY = lueckeY;
-    }
+
 }
 

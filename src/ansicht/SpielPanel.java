@@ -20,7 +20,6 @@ public class SpielPanel extends JPanel {
     private Image saeuleOben;
     private boolean spielGestartet = false;
 
-    private int punkte = 0;
     private Image hintergrundBild;
     private SpielModell spielModell;
     private Random random = new Random();
@@ -40,9 +39,9 @@ public class SpielPanel extends JPanel {
         spielModell = new SpielModell();
 
         saeulen = new ArrayList<>(); //arraylist, für mehrere säulen
-        saeulen.add(new Saeule(350, 80, 250, 180));
-        saeulen.add(new Saeule(650, 80, 200, 180));
-        saeulen.add(new Saeule(950, 80, 300, 180));
+        saeulen.add(new Saeule(350, 80, 200, 180));
+        saeulen.add(new Saeule(650, 80, 250, 180));
+        saeulen.add(new Saeule(950, 80, 220, 180));
 
         //alle 16millisek
         timer = new Timer(16, e -> {
@@ -97,14 +96,14 @@ public class SpielPanel extends JPanel {
                 Rectangle obereSaeule = new Rectangle(
                         saeule.getX(),
                         0,
-                        saeule.getBreite(),
+                        85,
                         saeule.getLueckeY()
                 );
 
                 Rectangle untereSaeule = new Rectangle(
                         saeule.getX(),
                         saeule.getLueckeY() + saeule.getLueckeHoehe(),
-                        saeule.getBreite(),
+                        85,
                         getHeight() - (saeule.getLueckeY() + saeule.getLueckeHoehe())
                 );
 
@@ -120,8 +119,8 @@ public class SpielPanel extends JPanel {
 
                 //wenn säule ausm bild verschwindet soll sie wieder kommen
                 if (saeule.getX() + saeule.getBreite() < 0) {
-                    saeule.setX(getWidth() + 600);
-                    saeule.setLueckeY(random.nextInt(250)+100);
+                    saeule.setX(getWidth() + 300);
+                    saeule.setLueckeY(random.nextInt(300)+150);
                     saeule.setPunktGegeben(false);
                 }
             }
@@ -169,23 +168,23 @@ public class SpielPanel extends JPanel {
                     120,
                     this
             );
-
-            g.setFont(new Font("Arial", Font.BOLD, 45));
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 45));
             g.setColor(new Color(255, 120, 170));
             g.drawString("FLAPPY BIRD", 80, 230);
+
 
             g.setColor(new Color(255, 230, 240));
             g.fillRoundRect(150, 400, 200, 70, 20, 20);
 
-            g.setColor(new Color(120, 90, 120));
+            g.setColor(new Color(255, 230, 240));
             g.drawRoundRect(150, 400, 200, 70, 20, 20);
 
-            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 30));
             g.setColor(Color.BLACK);
             g.drawString("START", 195, 445);
 
-            g.setFont(new Font("Arial", Font.BOLD, 18));
-            g.drawString("Leertaste zum Starten", 145, 510);
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+            g.drawString("Leertaste zum Starten", 150, 510);
 
             return;
         }
@@ -196,7 +195,7 @@ public class SpielPanel extends JPanel {
                     saeuleOben,
                     saeule.getX(),                  // x
                     0,                              // y (beginnt ganz oben)
-                    saeule.getBreite(),             // breite
+                    85,                             // breite
                     saeule.getLueckeY(),            // höhe (bis zur Lücke)
                     this
             );
@@ -207,7 +206,7 @@ public class SpielPanel extends JPanel {
                     saeuleUnten,
                     saeule.getX(),                  // x
                     untereY,                        // y (nach der Lücke)
-                    saeule.getBreite(),             // breite
+                    85,                             // breite
                     getHeight() - untereY,          // höhe (bis zum Boden)
                     this
             );
@@ -222,8 +221,7 @@ public class SpielPanel extends JPanel {
                 this
         );
 
-        g.setFont(new Font("Arial", Font.BOLD, 50));
-
+        g.setFont(new Font("Comic Sans MS", Font.BOLD, 50));
         g.setColor(new Color(255, 230, 240));
 
         String punkteText = String.valueOf(spielModell.getPunkte());
@@ -235,29 +233,29 @@ public class SpielPanel extends JPanel {
         );
         if (spielModell.isGameOver()) {
 
-            // Hintergrund
-            g.setColor(new Color(245, 220, 230));
+            // Hintergrund bei GameOver
+            g.setColor(new Color(255, 230, 240));
             g.fillRoundRect(80, 180, 340, 260, 15, 15);
 
             // Rahmen
-            g.setColor(new Color(120, 90, 120));
+            g.setColor(new Color(255, 230, 240));
             g.drawRoundRect(80, 180, 340, 260, 15, 15);
 
-            g.setFont(new Font("Arial", Font.BOLD, 38));
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 38));
             g.setColor(new Color(255, 120, 170));
-            g.drawString("GAME OVER", 120, 240);
+            g.drawString("GAME OVER", 135, 240);
 
-            g.setFont(new Font("Arial", Font.BOLD, 24));
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 26));
             g.setColor(Color.BLACK);
-            g.drawString("Score", 140, 310);
+            g.drawString("Score", 135, 310);
             g.drawString(String.valueOf(spielModell.getPunkte()), 290, 310);
 
             // Highscore
-            g.drawString("Highscore", 110, 360);
+            g.drawString("Highscore", 135, 360);
             g.drawString(String.valueOf(spielModell.getHighscore()), 290, 360);
 
-            g.setFont(new Font("Arial", Font.BOLD, 18));
-            g.drawString("Leertaste zum Neustart", 110, 420);
+            g.setFont(new Font("Comic Sans MS", Font.BOLD, 19));
+            g.drawString("Leertaste zum Neustart", 135, 420);
         }
     }
     private void neustarten() {
@@ -265,9 +263,9 @@ public class SpielPanel extends JPanel {
 
         saeulen.clear();
 
-        saeulen.add(new Saeule(350, 80, 250, 180));
-        saeulen.add(new Saeule(650, 80, 200, 180));
-        saeulen.add(new Saeule(950, 80, 300, 180));
+        saeulen.add(new Saeule(350, 80, 200, 180));
+        saeulen.add(new Saeule(650, 80, 250, 180));
+        saeulen.add(new Saeule(950, 80, 220, 180));
 
         spielModell.setPunkte(0);
         spielModell.setGameOver(false);
