@@ -41,6 +41,10 @@ public class SpielLogik {
             }
             spielModell.setGameOver(true);
         }
+        //Decken kollision
+        if (vogel.getY() <= 0) {
+            spielModell.setGameOver(true);
+        }
 
         // Vogel-Rechteck für Kollision
         Rectangle vogelRechteck = new Rectangle(
@@ -83,7 +87,7 @@ public class SpielLogik {
                 spielModell.setGameOver(true);
             }
 
-            // Säule recyceln
+            // Säule nochmal
             if (saeule.getX() + saeule.getBreite() < 0) {
                 saeule.setX(panelBreite + 300);
                 saeule.setLueckeY(random.nextInt(300) + 150);
