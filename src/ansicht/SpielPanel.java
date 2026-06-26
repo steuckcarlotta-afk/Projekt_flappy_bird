@@ -1,5 +1,6 @@
 package ansicht;
 
+import Logik.SpielLogik;
 import modell.Saeule;
 import modell.SpielModell;
 import modell.Vogel;
@@ -10,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
+
 
 public class SpielPanel extends JPanel {
     private Vogel vogel;
@@ -23,6 +25,7 @@ public class SpielPanel extends JPanel {
     private Image hintergrundBild;
     private SpielModell spielModell;
     private Random random = new Random();
+    private SpielLogik spielLogik;
 
 
     public SpielPanel() {
@@ -43,6 +46,8 @@ public class SpielPanel extends JPanel {
         saeulen.add(new Saeule(650, 80, 250, 180));
         saeulen.add(new Saeule(950, 80, 220, 180));
 
+        spielLogik = new SpielLogik(vogel, saeulen,spielModell, 500, 700);
+
         //alle 16millisek
         timer = new Timer(16, e -> {
             if (!spielGestartet) {
@@ -54,76 +59,7 @@ public class SpielPanel extends JPanel {
                 repaint();
                 return;
             }
-
-            vogel.setGeschwindigkeitY(
-                    vogel.getGeschwindigkeitY() + 0.5 //gravität wird hergestellt(geschwindigkeit nach unten wird immer größer)
-            );
-
-            //Vogel bewegen
-            vogel.setY(
-                    vogel.getY() + (int) vogel.getGeschwindigkeitY()
-            );
-
-            if (vogel.getY() + vogel.getGroesse() >= getHeight()) { // Prüft, ob der Vogel den Boden berührt
-                vogel.setY(getHeight() - vogel.getGroesse()); // Setzt den Vogel exakt auf den Boden
-               if(spielModell.getPunkte()> spielModell.getHighscore()){
-                   spielModell.setHighscore(
-                           spielModell.getPunkte()
-                   );
-               }
-               spielModell.setGameOver(true);
-            }
-
-            Rectangle vogelRechteck = new Rectangle(
-                    vogel.getX() + 25,
-                    vogel.getY() + 25,
-                    vogel.getGroesse() - 50,
-                    vogel.getGroesse() - 50
-            );
-
-            for (Saeule saeule : saeulen) {
-
-                //säule bewegen
-                saeule.setX(saeule.getX() - 3);
-
-                if (saeule.getX() + saeule.getBreite() < vogel.getX() && !saeule.isPunktGegeben()) {
-                    spielModell.setPunkte(
-                            spielModell.getPunkte()+1
-                    );
-                    saeule.setPunktGegeben(true);
-                }
-
-                Rectangle obereSaeule = new Rectangle(
-                        saeule.getX(),
-                        0,
-                        85,
-                        saeule.getLueckeY()
-                );
-
-                Rectangle untereSaeule = new Rectangle(
-                        saeule.getX(),
-                        saeule.getLueckeY() + saeule.getLueckeHoehe(),
-                        85,
-                        getHeight() - (saeule.getLueckeY() + saeule.getLueckeHoehe())
-                );
-
-                if (vogelRechteck.intersects(obereSaeule)
-                        || vogelRechteck.intersects(untereSaeule)) {
-                    if (spielModell.getPunkte() > spielModell.getHighscore()) {
-                        spielModell.setHighscore(
-                                spielModell.getPunkte()
-                        );
-                    }
-                    spielModell.setGameOver(true);
-                }
-
-                //wenn säule ausm bild verschwindet soll sie wieder kommen
-                if (saeule.getX() + saeule.getBreite() < 0) {
-                    saeule.setX(getWidth() + 300);
-                    saeule.setLueckeY(random.nextInt(300)+150);
-                    saeule.setPunktGegeben(false);
-                }
-            }
+            spielLogik.update();
 
             repaint();
         });
@@ -259,15 +195,17 @@ public class SpielPanel extends JPanel {
         }
     }
     private void neustarten() {
-        vogel = new Vogel(100, 200, 100);
+        vogel.reset(100, 200);
 
         saeulen.clear();
-
         saeulen.add(new Saeule(350, 80, 200, 180));
         saeulen.add(new Saeule(650, 80, 250, 180));
         saeulen.add(new Saeule(950, 80, 220, 180));
 
         spielModell.setPunkte(0);
         spielModell.setGameOver(false);
+
+
+        spielLogik = new SpielLogik(vogel, saeulen, spielModell, 500, 700);
     }
 }

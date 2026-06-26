@@ -1,6 +1,7 @@
 package modell;
 
 import speicherung.HighscoreSpeicherung;
+import speicherung.HighscoreClient;
 
 public class SpielModell {
 
@@ -14,8 +15,8 @@ public class SpielModell {
     }
 
     public void setHighscore(int highscore) {
-        this.highscore = highscore;
-        speicherung.speichern(highscore); // ← sofort in Datei speichern
+        this.highscore = HighscoreClient.sendeScore(highscore); // Schickt zum Server, bekommt echten Highscore zurück
+        speicherung.speichern(this.highscore); // speichert dann den vom Server zurückgegebenen Wert
     }
     public int getPunkte() {
         return punkte;
